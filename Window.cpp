@@ -23,10 +23,10 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 }
 int Window::Initialise()
 {
-	//Inicialización de GLFW
+	//InicializaciÃ³n de GLFW
 	if (!glfwInit())
 	{
-		printf("Falló inicializar GLFW");
+		printf("FallÃ³ inicializar GLFW");
 		glfwTerminate();
 		return 1;
 	}
@@ -39,14 +39,14 @@ int Window::Initialise()
 
 	//CREAR VENTANA
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final: Crisis ambiental", NULL, NULL);
-
+	//glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (!mainWindow)
 	{
 		printf("Fallo en crearse la ventana con GLFW");
 		glfwTerminate();
 		return 1;
 	}
-	//Obtener tamaño de Buffer
+	//Obtener tamaÃ±o de Buffer
 	glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
 	//asignar el contexto
@@ -61,7 +61,7 @@ int Window::Initialise()
 
 	if (glewInit() != GLEW_OK)
 	{
-		printf("Falló inicialización de GLEW");
+		printf("FallÃ³ inicializaciÃ³n de GLEW");
 		glfwDestroyWindow(mainWindow);
 		glfwTerminate();
 		return 1;
@@ -73,7 +73,7 @@ int Window::Initialise()
 	//Asignar Viewport
 	glViewport(0, 0, bufferWidth, bufferHeight);
 
-	//Callback para detectar que se está usando la ventana
+	//Callback para detectar que se estÃ¡ usando la ventana
 	glfwSetWindowUserPointer(mainWindow, this);
 }
 
@@ -121,18 +121,59 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		}
 	}
 
+	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+		if (theWindow->cambio_camara == 1) {
+			theWindow->cambio_camara = 0;
+		}
+		else {
+			theWindow->cambio_camara = 1;
+		}
+	}
+
 	if (key == GLFW_KEY_X) {
 		if (theWindow->change_escenario <= 2) {
 			theWindow->change_escenario++;
-			theWindow->flag_escenario = true;
+			if (theWindow -> change_escenario == 0) {
+				theWindow->escenario1 = true;
+				theWindow->escenario2 = false;
+				theWindow->escenario3 = false;
+			}
+			if (theWindow->change_escenario == 1) {
+				theWindow->escenario1 = false;
+				theWindow->escenario2 = true;
+				theWindow->escenario3 = false;
+			}
+			if (theWindow->change_escenario == 2) {
+				theWindow->escenario1 = false;
+				theWindow->escenario2 = false;
+				theWindow->escenario3 = true;
+			}
 		}
 	}
 
 	if (key == GLFW_KEY_Z) {
 		if (theWindow->change_escenario >= 0) {
 			theWindow->change_escenario--;
-			theWindow->flag_escenario = false;
+			if (theWindow->change_escenario == 0) {
+				theWindow->escenario1 = true;
+				theWindow->escenario2 = false;
+				theWindow->escenario3 = false;
+			}
+			if (theWindow->change_escenario == 1) {
+				theWindow->escenario1 = false;
+				theWindow->escenario2 = true;
+				theWindow->escenario3 = false;
+			}
+			if (theWindow->change_escenario == 2) {
+				theWindow->escenario1 = false;
+				theWindow->escenario2 = false;
+				theWindow->escenario3 = true;
+			}
 		}
+	}
+
+	if (key == GLFW_KEY_Q) {
+		theWindow->interactuar = 0;
 	}
 }
 
