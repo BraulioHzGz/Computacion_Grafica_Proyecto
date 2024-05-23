@@ -13,8 +13,12 @@ public:
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
-	GLint IntGetEscenario() { return change_escenario; };
-	GLboolean BoolGetCambioEscenario() { return flag_escenario; }
+	GLint GetEscenario() { return change_escenario; };
+	GLint GetCamara() { return cambio_camara; }
+	GLint GetInteraccion() { return hacer_interaccion; }
+	GLboolean GetEscenario1() { return escenario1; }
+	GLboolean GetEscenario2() { return escenario2; }
+	GLboolean GetEscenario3() { return escenario3; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -31,13 +35,16 @@ private:
 	GLfloat lastY;
 	GLfloat xChange;
 	GLfloat yChange;
-	GLint interactuar;	//¿Debería ser bool?
-	GLint comer;		//¿Debería ser bool?
-	GLint change_escenario;
-	bool flag_escenario;
+	GLint interactuar;	//Â¿DeberÃ­a ser bool?
+	GLint comer;		//Â¿DeberÃ­a ser bool?
+	GLint change_escenario = 0;
+	GLint cambio_camara = 1;
+	GLint hacer_interaccion;
+	bool escenario1;
+	bool escenario2;
+	bool escenario3;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
-
 };
 
