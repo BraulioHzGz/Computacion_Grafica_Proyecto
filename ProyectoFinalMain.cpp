@@ -1,11 +1,4 @@
-/*
-	Animación != Movimiento
-				Solo 1 transformación geométrica -> no es animación.
-	Animación básica: banderas, condicionales y ciclos
-	Animación compleja: básicas anidadas, funciones y algoritmos de fenómenos físicos.
-*/
-
-
+//PROYECTO FINAL - COMPUTACIÓN GRÁFICA
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -82,13 +75,6 @@ Material Material_opaco;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
-
-//Variables para la animación de escenarios
-float movEscenario = 0.0f;
-float movEscenarioOffset = 3.0;
-
-//Variables para la animación del mundo natural
-
 
 // luz direccional
 DirectionalLight mainLight;
@@ -246,7 +232,8 @@ int main() {
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.1f, 0.1f);
+	camera = Camera(glm::vec3(-0.4f, -1.5f, -8.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.2f, 0.1f);
+	//VELOCIDAD ESTANDAR: 0.02
 
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
@@ -262,8 +249,10 @@ int main() {
 	MuroBlanco.LoadModel("Models/MuroBlanco.obj");
 	escenario_Antes = Model();
 	escenario_Antes.LoadModel("Models/escenario_antes_optimizado.obj");
-	/*escenario_Durante = Model();
-	escenario_Durante.LoadModel("Models/escenario_actual.obj");*/
+	escenario_Durante = Model();
+	escenario_Durante.LoadModel("Models/escenario_actual.obj");
+	escenario_Despues = Model();
+	escenario_Despues.LoadModel("Models/ciudad_despues.obj");
 
 	//CARGA DE LOS ANIMALES:
 	//AGUILA
@@ -294,17 +283,6 @@ int main() {
 	ajolote.LoadModel("Models/Ajolote_texturizado.obj");
 	lobo = Model();
 	lobo.LoadModel("Models/Lobo_texturizado.obj");
-
-
-	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/skyrender00010.tga");
-	skyboxFaces.push_back("Textures/Skybox/skyrender00040.tga");
-	skyboxFaces.push_back("Textures/Skybox/skyrender00060.tga");//piso
-	skyboxFaces.push_back("Textures/Skybox/skyrender00030.tga");//cielo
-	skyboxFaces.push_back("Textures/Skybox/skyrender00050.tga");
-	skyboxFaces.push_back("Textures/Skybox/skyrender00020.tga");
-
-	skybox = Skybox(skyboxFaces);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
@@ -346,6 +324,11 @@ int main() {
 		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset = 0;
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+
+	//Variables para cambio de los escenarios
+	float movEscenario1 = 0.0f;
+	float movEscenario2 = 0.0f;
+	float movEscenario3 = 0.0f;
 
 	//Variables para animación del águila
 	float anguloAguila = 0.0f;
@@ -392,6 +375,29 @@ int main() {
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
+		if (mainWindow.GetEscenario1() || mainWindow.GetEscenario3()) {
+			std::vector<std::string> skyboxFaces;
+			skyboxFaces.push_back("Textures/Skybox/skyrender00010.tga");
+			skyboxFaces.push_back("Textures/Skybox/skyrender00040.tga");
+			skyboxFaces.push_back("Textures/Skybox/skyrender00060.tga");//piso
+			skyboxFaces.push_back("Textures/Skybox/skyrender00030.tga");//cielo
+			skyboxFaces.push_back("Textures/Skybox/skyrender00050.tga");
+			skyboxFaces.push_back("Textures/Skybox/skyrender00020.tga");
+
+			skybox = Skybox(skyboxFaces);
+		}
+		else if (mainWindow.GetEscenario2()) {
+			std::vector<std::string> skyboxFaces;
+			skyboxFaces.push_back("Textures/Skybox/skyrender00011.tga");
+			skyboxFaces.push_back("Textures/Skybox/skyrender00041.tga");
+			skyboxFaces.push_back("Textures/Skybox/skyrender00061.tga");//piso
+			skyboxFaces.push_back("Textures/Skybox/skyrender00031.tga");//cielo
+			skyboxFaces.push_back("Textures/Skybox/skyrender00051.tga");
+			skyboxFaces.push_back("Textures/Skybox/skyrender00021.tga");
+
+			skybox = Skybox(skyboxFaces);
+		}
+
 		//Recibir eventos del usuario
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
@@ -422,13 +428,8 @@ int main() {
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 
-		// ----- LUCES SPOT -----
-		//spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
-
-		//shaderList[0].SetPointLights(pointLights, pointLightCount);
 
 		glm::mat4 model(1.0);		//Matriz para todo lo demás
 		glm::mat4 modelaux(1.0);	//Matriz para la jerarquía
@@ -450,7 +451,24 @@ int main() {
 		pisoTexture.UseTexture();
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-		//CONDICIONES Y ESTRUCTURAS PARA CONTROLAR ANIMACIONES
+		//CONDICIONES PARA EL MOVIMIENTO DE ESCENARIOS
+		if (mainWindow.GetEscenario() == 0) {
+			movEscenario1 = 0.0f;
+			movEscenario2 = 15.0f;
+			movEscenario3 = 30.0f;
+		}
+		else if (mainWindow.GetEscenario() == 1) {
+			movEscenario1 = 30.0f;
+			movEscenario2 = 0.0f;
+			movEscenario3 = 15.0f;
+		}
+		else if (mainWindow.GetEscenario() >= 2) {
+			movEscenario1 = 15.0f;
+			movEscenario2 = 30.0f;
+			movEscenario3 = 0.0f;
+		}
+
+		//CONDICIONES Y ESTRUCTURAS PARA CONTROLAR ANIMACIONES DEPENDIENDO QUE ESCENARIO ESTÉ ACTIVO
 		if (mainWindow.GetEscenario1()) {
 			anguloAguila += anguloAguilaOffset * deltaTime;
 			anguloVistaAguila += anguloVistaAguilaOffset * deltaTime;
@@ -543,17 +561,11 @@ int main() {
 				}
 			}
 		}
-		else if (mainWindow.GetEscenario2()) {
-			printf("\nSE HA SELECCIONADO EL SEGUNDO ESCANARIO");
-		}
-		else if (mainWindow.GetEscenario3()) {
-			printf("\nSE HA SELECCIONADO EL TERCER ESCANARIO");
-		}
-
 
 		//AGUILA 1: ESTANQUE
 		//Instancia del cuerpo del águila
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-5.5f + radio * cos(anguloAguila), 3.0f, -5.5f + radio * sin(anguloAguila)));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, (-anguloVistaAguila) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -581,6 +593,7 @@ int main() {
 		//AGUILA 2: BOSQUE CAZANDO
 		//Instancia del cuerpo del águila
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(5.5f + radio * cos(anguloAguila), 5.0f, 5.5f + radio * sin(anguloAguila)));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, (-anguloVistaAguila) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -608,6 +621,7 @@ int main() {
 		//LOBOS QUE VAN A ESTAR FIJOS EN LAS MONTAÑAS (animaciones no agregadas aún)
 		//Instancia del lobo 1
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-7.5f, 2.85f, 7.7f));
 		model = glm::rotate(model, 80 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
@@ -616,6 +630,7 @@ int main() {
 
 		//Instancia del lobo 2
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-7.0f, 2.85f, 7.3f));
 		model = glm::rotate(model, 70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
@@ -624,6 +639,7 @@ int main() {
 
 		//Instancia del lobo 3
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-6.7f, 2.85f, 7.7f));
 		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
@@ -633,6 +649,7 @@ int main() {
 
 		//Instancia del primer ajolote nadando
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-5.0f, -1.87f, -3.0f - movAjolote1));
 		modelaux = model;
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -653,6 +670,7 @@ int main() {
 
 		//Instancia del segundo ajolote nadando
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-7.0f, -1.87f, -7.5f + movAjolote2));
 		modelaux = model;
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -672,8 +690,9 @@ int main() {
 		ColaAjolote.RenderModel();
 
 
-		//Instancia del mapache
+		//Instancia de los mapaches
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(6.5f, -0.55f, -6.5f));
 		model = glm::rotate(model, 225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
@@ -681,6 +700,7 @@ int main() {
 		mapache.RenderModel();
 
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(6.5f, -0.55f, -7.0f));
 		model = glm::rotate(model, 250 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
@@ -688,6 +708,7 @@ int main() {
 		mapache.RenderModel();
 
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(6.8f, -0.55f, -6.0f));
 		model = glm::rotate(model, 200 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
@@ -699,6 +720,7 @@ int main() {
 
 		//Abejas en flores azules/blancas
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(7.38f, -1.54f + sin(movAbejaY) / 10, 8.3f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelaux = model;
@@ -722,6 +744,7 @@ int main() {
 
 
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(2.6f, -1.5f + sin(movAbejaY) / 10, -8.6f));
 		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelaux = model;
@@ -746,6 +769,7 @@ int main() {
 
 		//Abejas en flores moradas
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(4.5f + radioAbeja*cos(anguloAbeja), -0.9 + sin(movAbejaY) / 10, 0.8f + radioAbeja * sin(anguloAbeja)));
 		model = glm::rotate(model, -anguloVistaAguila * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		modelaux = model;
@@ -769,6 +793,7 @@ int main() {
 
 		//Instancia del muro blanco
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-0.4f, -1.88f, -9.6f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.035f, 0.035f, 0.035f));
@@ -783,6 +808,7 @@ int main() {
 		toffsetTEXT = glm::vec2(tooffsetTU, tooffsetTV);
 
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-0.4f, -0.58f, -9.59999f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.2f, 0.6f, 1.0f));
@@ -796,6 +822,7 @@ int main() {
 		glDisable(GL_BLEND);
 
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f - movEscenario1, 0.0f));
 		model = glm::translate(model, glm::vec3(-0.4f, -1.38f, -9.59999f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.70f, 0.55f, 0.55f));
@@ -810,7 +837,7 @@ int main() {
 
 		//INSTANCIA DE LA PARTE NATURAL Y TODOS SUS MODELOS
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f - movEscenario1, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glEnable(GL_BLEND);
@@ -819,17 +846,33 @@ int main() {
 		glDisable(GL_BLEND);
 
 
+
+
 		//ESCENARIO ACTUAL
 		//Instancia de la ciudad actual
-		/*model = glm::mat4(1.0);
+		model = glm::mat4(1.0);
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(15.0f, -1.75f, -9.5f));
-		model = glm::scale(model, glm::vec3(0.0165f, 0.0165f, 0.0165f));
+		model = glm::translate(model, glm::vec3(-10.0f, -1.65f - movEscenario2, -9.5f));
+		model = glm::scale(model, glm::vec3(0.0175f, 0.0165f, 0.0165f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		escenario_Durante.RenderModel();
-		glDisable(GL_BLEND);*/
+		glDisable(GL_BLEND);
+
+
+
+
+		////ESCENARIO DESPUÉS
+		model = glm::mat4(1.0);
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-10.0f, -1.65f - movEscenario3, -9.5f));
+		model = glm::scale(model, glm::vec3(0.0175f, 0.0165f, 0.0165f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		escenario_Despues.RenderModel();
+		glDisable(GL_BLEND);
 
 		glUseProgram(0);
 
