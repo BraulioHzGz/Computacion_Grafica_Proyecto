@@ -121,60 +121,54 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		}
 	}
 
-	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
-		if (theWindow->cambio_camara == 1) {
-			theWindow->cambio_camara = 0;
-		}
-		else {
-			theWindow->cambio_camara = 1;
-		}
-	}
-
-	if (key == GLFW_KEY_X) {
+	if (key == GLFW_KEY_X && action == GLFW_PRESS) {
 		if (theWindow->change_escenario <= 2) {
 			theWindow->change_escenario++;
 			if (theWindow -> change_escenario == 0) {
 				theWindow->escenario1 = true;
 				theWindow->escenario2 = false;
 				theWindow->escenario3 = false;
+				
 			}
 			if (theWindow->change_escenario == 1) {
 				theWindow->escenario1 = false;
 				theWindow->escenario2 = true;
 				theWindow->escenario3 = false;
+
 			}
 			if (theWindow->change_escenario == 2) {
 				theWindow->escenario1 = false;
 				theWindow->escenario2 = false;
 				theWindow->escenario3 = true;
+
 			}
 		}
 	}
 
-	if (key == GLFW_KEY_Z) {
+	if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
 		if (theWindow->change_escenario >= 0) {
 			theWindow->change_escenario--;
 			if (theWindow->change_escenario == 0) {
 				theWindow->escenario1 = true;
 				theWindow->escenario2 = false;
 				theWindow->escenario3 = false;
+
 			}
 			if (theWindow->change_escenario == 1) {
 				theWindow->escenario1 = false;
 				theWindow->escenario2 = true;
 				theWindow->escenario3 = false;
+
 			}
 			if (theWindow->change_escenario == 2) {
 				theWindow->escenario1 = false;
 				theWindow->escenario2 = false;
 				theWindow->escenario3 = true;
+
 			}
 		}
 	}
 
-	if (key == GLFW_KEY_Q) {
-		theWindow->interactuar = 0;
-	}
 }
 
 void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)
