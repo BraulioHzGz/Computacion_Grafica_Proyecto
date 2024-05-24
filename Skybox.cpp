@@ -1,6 +1,6 @@
 #include "Skybox.h"
 
-
+float scale = 1.0f;
 
 Skybox::Skybox()
 {
@@ -22,13 +22,13 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 		unsigned char *texData = stbi_load(faceLocations[i].c_str(), &width, &height, &bitDepth, 0); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
 		if (!texData)
 		{
-			printf("No se encontró : %s\n", faceLocations[i].c_str());
+			printf("No se encontrÃ³ : %s\n", faceLocations[i].c_str());
 			return;
 		}
 		//para cambiar el origen a la esquina inferior izquierda como necesitamos
 		//stbi_set_flip_vertically_on_load(true);
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X +i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData); //SIN CANAL ALPHA A ENOS QUE QUERAMOS AGREGAR EFECTO DE PARALLAX
-		stbi_image_free(texData); //para liberar la información de la imagen
+		stbi_image_free(texData); //para liberar la informaciÃ³n de la imagen
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -59,14 +59,14 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	};
 
 	float skyboxVertices[] = {
-		-1.0f, 1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//v0
-		-1.0f, -1.0f, -1.0f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V1
-		1.0f, 1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V2
-		1.0f, -1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V3
-		-1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V4
-		1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V5
-		-1.0f, -1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V6
-		1.0f, -1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f//V7
+		-1.0f * scale, 1.0f * scale,  -1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//v0
+		-1.0f * scale, -1.0f * scale, -1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V1
+		1.0f * scale,  1.0f * scale,  -1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V2
+		1.0f * scale,  -1.0f * scale, -1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V3
+		-1.0f * scale,  1.0f * scale,  1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V4
+		1.0f * scale,   1.0f * scale,  1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V5
+		-1.0f * scale, -1.0f * scale,  1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,//V6
+		1.0f * scale,  -1.0f * scale,  1.0f * scale,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f//V7
 	};
 	skyMesh = new Mesh();
 	skyMesh->CreateMesh(skyboxVertices, skyboxIndices, 64, 36);
