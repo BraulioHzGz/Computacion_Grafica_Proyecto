@@ -1,4 +1,11 @@
-//PROYECTO FINAL - COMPUTACIÓN GRÁFICA
+/*
+	Animación != Movimiento
+				Solo 1 transformación geométrica -> no es animación.
+	Animación básica: banderas, condicionales y ciclos
+	Animación compleja: básicas anidadas, funciones y algoritmos de fenómenos físicos.
+*/
+
+
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -232,7 +239,7 @@ int main() {
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(-0.4f, -1.5f, -8.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.2f, 0.1f);
+	camera = Camera(glm::vec3(-0.4f, -1.5f, -8.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.02f, 0.1f);
 	//VELOCIDAD ESTANDAR: 0.02
 
 	pisoTexture = Texture("Textures/piso.tga");
@@ -251,8 +258,8 @@ int main() {
 	escenario_Antes.LoadModel("Models/escenario_antes_optimizado.obj");
 	escenario_Durante = Model();
 	escenario_Durante.LoadModel("Models/escenario_actual.obj");
-	escenario_Despues = Model();
-	escenario_Despues.LoadModel("Models/ciudad_despues.obj");
+	/*escenario_Despues = Model();
+	escenario_Despues.LoadModel("Models/ciudad_despues.obj");*/
 
 	//CARGA DE LOS ANIMALES:
 	//AGUILA
@@ -864,7 +871,7 @@ int main() {
 
 
 		////ESCENARIO DESPUÉS
-		model = glm::mat4(1.0);
+		/*model = glm::mat4(1.0);
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(model, glm::vec3(-10.0f, -1.65f - movEscenario3, -9.5f));
 		model = glm::scale(model, glm::vec3(0.0175f, 0.0165f, 0.0165f));
@@ -872,7 +879,7 @@ int main() {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		escenario_Despues.RenderModel();
-		glDisable(GL_BLEND);
+		glDisable(GL_BLEND);*/
 
 		glUseProgram(0);
 
