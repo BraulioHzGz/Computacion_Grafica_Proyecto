@@ -39,7 +39,7 @@ int Window::Initialise()
 
 	//CREAR VENTANA
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final: Crisis ambiental", NULL, NULL);
-	//glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (!mainWindow)
 	{
 		printf("Fallo en crearse la ventana con GLFW");
@@ -136,11 +136,8 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 				theWindow->escenario3 = false;
 
 			}
-			if (theWindow->change_escenario == 2) {
-				theWindow->escenario1 = false;
-				theWindow->escenario2 = false;
-				theWindow->escenario3 = true;
-
+			else if (theWindow->change_escenario > 1) {
+				theWindow->change_escenario = 1;
 			}
 		}
 	}
@@ -160,11 +157,8 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 				theWindow->escenario3 = false;
 
 			}
-			if (theWindow->change_escenario == 2) {
-				theWindow->escenario1 = false;
-				theWindow->escenario2 = false;
-				theWindow->escenario3 = true;
-
+			if (theWindow->change_escenario < 0) {
+				theWindow->change_escenario = 0;
 			}
 		}
 	}
