@@ -382,28 +382,15 @@ int main() {
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
-		if (mainWindow.GetEscenario1() || mainWindow.GetEscenario3()) {
-			std::vector<std::string> skyboxFaces;
-			skyboxFaces.push_back("Textures/Skybox/skyrender00010.tga");
-			skyboxFaces.push_back("Textures/Skybox/skyrender00040.tga");
-			skyboxFaces.push_back("Textures/Skybox/skyrender00060.tga");//piso
-			skyboxFaces.push_back("Textures/Skybox/skyrender00030.tga");//cielo
-			skyboxFaces.push_back("Textures/Skybox/skyrender00050.tga");
-			skyboxFaces.push_back("Textures/Skybox/skyrender00020.tga");
+		std::vector<std::string> skyboxFaces;
+		skyboxFaces.push_back("Textures/Skybox/skyrender00010.tga");
+		skyboxFaces.push_back("Textures/Skybox/skyrender00040.tga");
+		skyboxFaces.push_back("Textures/Skybox/skyrender00060.tga");//piso
+		skyboxFaces.push_back("Textures/Skybox/skyrender00030.tga");//cielo
+		skyboxFaces.push_back("Textures/Skybox/skyrender00050.tga");
+		skyboxFaces.push_back("Textures/Skybox/skyrender00020.tga");
 
-			skybox = Skybox(skyboxFaces);
-		}
-		else if (mainWindow.GetEscenario2()) {
-			std::vector<std::string> skyboxFaces;
-			skyboxFaces.push_back("Textures/Skybox/skyrender00011.tga");
-			skyboxFaces.push_back("Textures/Skybox/skyrender00041.tga");
-			skyboxFaces.push_back("Textures/Skybox/skyrender00061.tga");//piso
-			skyboxFaces.push_back("Textures/Skybox/skyrender00031.tga");//cielo
-			skyboxFaces.push_back("Textures/Skybox/skyrender00051.tga");
-			skyboxFaces.push_back("Textures/Skybox/skyrender00021.tga");
-
-			skybox = Skybox(skyboxFaces);
-		}
+		skybox = Skybox(skyboxFaces);
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -462,17 +449,10 @@ int main() {
 		if (mainWindow.GetEscenario() == 0) {
 			movEscenario1 = 0.0f;
 			movEscenario2 = 15.0f;
-			movEscenario3 = 30.0f;
 		}
 		else if (mainWindow.GetEscenario() == 1) {
-			movEscenario1 = 30.0f;
-			movEscenario2 = 0.0f;
-			movEscenario3 = 15.0f;
-		}
-		else if (mainWindow.GetEscenario() >= 2) {
 			movEscenario1 = 15.0f;
-			movEscenario2 = 30.0f;
-			movEscenario3 = 0.0f;
+			movEscenario2 = 0.0f;
 		}
 
 		//CONDICIONES Y ESTRUCTURAS PARA CONTROLAR ANIMACIONES DEPENDIENDO QUE ESCENARIO ESTÉ ACTIVO
@@ -870,16 +850,16 @@ int main() {
 
 
 
-		////ESCENARIO DESPUÉS
-		/*model = glm::mat4(1.0);
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(-10.0f, -1.65f - movEscenario3, -9.5f));
-		model = glm::scale(model, glm::vec3(0.0175f, 0.0165f, 0.0165f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		escenario_Despues.RenderModel();
-		glDisable(GL_BLEND);*/
+		//////ESCENARIO DESPUÉS
+		//model = glm::mat4(1.0);
+		//model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::translate(model, glm::vec3(-10.0f, -1.65f - movEscenario3, -9.5f));
+		//model = glm::scale(model, glm::vec3(0.0175f, 0.0165f, 0.0165f));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//escenario_Despues.RenderModel();
+		//glDisable(GL_BLEND);
 
 		glUseProgram(0);
 
