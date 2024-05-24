@@ -22,22 +22,26 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 
 	if (keys[GLFW_KEY_W])
 	{
-		position += front * velocity;
+		position += glm::vec3(front.x, 0.0f, front.z) * velocity;
+		//position += front * velocity;
 	}
 
 	if (keys[GLFW_KEY_S])
 	{
-		position -= front * velocity;
+		position -= glm::vec3(front.x, 0.0f, front.z) * velocity;
+		//position -= front * velocity;
 	}
 
 	if (keys[GLFW_KEY_A])
 	{
-		position -= right * velocity;
+		position -= glm::vec3(right.x, 0.0f, right.z) * velocity;
+		//position -= right * velocity;
 	}
 
 	if (keys[GLFW_KEY_D])
 	{
-		position += right * velocity;
+		position += glm::vec3(right.x, 0.0f, right.z) * velocity;
+		//position += right * velocity;
 	}
 }
 
